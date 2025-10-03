@@ -10,8 +10,8 @@ La API permite realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sob
 Obtiene todos los estudiantes almacenados en la base de datos.
 
 Respuesta exitosa:
-- Código: 200
-- Cuerpo de la respuesta:
+ Código: 200
+ Cuerpo de la respuesta:
   [
     {
       "id": 1,
