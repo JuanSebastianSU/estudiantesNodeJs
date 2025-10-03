@@ -1,18 +1,17 @@
-# API CRUD de Estudiantes con Node.js y PostgreSQL
+API CRUD de Estudiantes con Node.js y PostgreSQL
 
-Este proyecto proporciona una API RESTful para gestionar estudiantes, utilizando **Express.js** para el servidor y **PostgreSQL** como base de datos.
+Este proyecto proporciona una API RESTful para gestionar estudiantes, utilizando **Express.js** para el servidor y PostgreSQL como base de datos.
 
-# Endpoints de la API
+Endpoints de la API
 
 La API permite realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre los estudiantes. Los estudiantes se almacenan en una base de datos PostgreSQL.
 
-### 1. **GET /estudiantes**
+1. **GET /estudiantes
 Obtiene todos los estudiantes almacenados en la base de datos.
 
-*Respuesta exitosa:*
-- *Código:** 200
-- *Cuerpo de la respuesta:*
-  ```json
+Respuesta exitosa:
+- Código: 200
+- Cuerpo de la respuesta:
   [
     {
       "id": 1,
