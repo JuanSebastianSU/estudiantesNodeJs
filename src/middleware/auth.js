@@ -7,7 +7,7 @@ function requireAuth(req, res, next) {
   if (!token) return res.status(401).json({ error: 'Token requerido' });
   try {
     const payload = jwt.verify(token, JWT_SECRET);
-    req.user = payload; // { id, email, role }
+    req.user = payload; 
     next();
   } catch (err) {
     return res.status(401).json({ error: 'Token inválido o expirado' });

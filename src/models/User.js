@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
     passwordHash: { type: DataTypes.STRING, allowNull: false },
     role: { type: DataTypes.STRING, allowNull: false, defaultValue: 'user' },
     nombre: { type: DataTypes.STRING },
-    createdBy:{ type: DataTypes.UUID } // <- NUEVO
+    createdBy:{ type: DataTypes.UUID } 
   }, { tableName: 'usuarios', timestamps: true });
   return User;
 };

@@ -5,7 +5,7 @@ module.exports = (sequelize) => {
     nombre: { type: DataTypes.STRING, allowNull: false },
     email: { type: DataTypes.STRING },
     edad: { type: DataTypes.INTEGER },
-    createdBy:{ type: DataTypes.UUID } // <- NUEVO
+    createdBy:{ type: DataTypes.UUID }
   }, { tableName: 'estudiantes', timestamps: true });
   return Estudiante;
 };

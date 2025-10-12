@@ -2,7 +2,6 @@ const { Estudiante } = require('../models');
 const { ROLES } = require('../config/roles');
 
 module.exports = {
-  // Listar: todos autenticados pueden ver (ajusta si quieres filtrar por owner)
   async list(req, res) {
     try {
       const items = await Estudiante.findAll();
@@ -12,7 +11,6 @@ module.exports = {
     }
   },
 
-  // Crear: asigna owner
   async create(req, res) {
     try {
       const data = { ...req.body, createdBy: req.user.id };
@@ -23,7 +21,6 @@ module.exports = {
     }
   },
 
-  // PUT (reemplazo/actualización total) — admin o dueño
   async update(req, res) {
     try {
       const item = await Estudiante.findByPk(req.params.id);
@@ -40,7 +37,6 @@ module.exports = {
     }
   },
 
-  // PATCH (parcial) — admin o dueño
   async patch(req, res) {
     try {
       const item = await Estudiante.findByPk(req.params.id);
@@ -57,7 +53,6 @@ module.exports = {
     }
   },
 
-  // DELETE — solo admin (reforzamos además del middleware)
   async remove(req, res) {
     try {
       if (req.user.role !== ROLES.ADMIN) return res.status(403).json({ error: 'Solo admin puede borrar' });

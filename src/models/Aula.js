@@ -4,7 +4,7 @@ module.exports = (sequelize) => {
     id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
     nombre: { type: DataTypes.STRING, allowNull: false },
     capacidad: { type: DataTypes.INTEGER, defaultValue: 0 },
-    createdBy:{ type: DataTypes.UUID }// <- NUEVO
+    createdBy:{ type: DataTypes.UUID }
   }, { tableName: 'aulas', timestamps: true });
   return Aula;
 };
