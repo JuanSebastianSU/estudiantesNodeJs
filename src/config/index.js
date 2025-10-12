@@ -1,0 +1,10 @@
+require('dotenv').config();
+module.exports = {
+  PORT: process.env.PORT || 3000,
+  PG_HOST: process.env.PG_HOST || 'localhost',
+  PG_PORT: Number(process.env.PG_PORT || 5432),
+  PG_USER: process.env.PG_USER || 'postgres',
+  PG_PASSWORD: process.env.PG_PASSWORD || '',
+  PG_DATABASE: process.env.PG_DATABASE || 'estudiante-api',
+  JWT_SECRET: process.env.JWT_SECRET || 'cambia-esto-en-produccion'
+};
