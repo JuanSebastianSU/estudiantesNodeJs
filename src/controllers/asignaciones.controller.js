@@ -2,17 +2,14 @@ const { Asignacion, Curso, Profesor, Aula } = require('../models');
 const { ROLES } = require('../config/roles');
 
 module.exports = {
-
-  async list(req, res) {
+  async list(req, res, next) {
     try {
       const items = await Asignacion.findAll({ include: [Curso, Profesor, Aula] });
       res.json(items);
-    } catch (e) {
-      res.status(500).json({ error: 'Error listando' });
-    }
+    } catch (e) { next(e); }
   },
 
-  async create(req, res) {
+  async create(req, res, next) {
     try {
       const { cursoId, profesorId, aulaId } = req.body;
       if (!cursoId || !profesorId || !aulaId) {
@@ -30,41 +27,10 @@ module.exports = {
 
       const nuevo = await Asignacion.create({ cursoId, profesorId, aulaId, createdBy: req.user.id });
       res.status(201).json(nuevo);
-    } catch (e) {
-      res.status(400).json({ error: 'Error creando' });
-    }
+    } catch (e) { next(e); }
   },
 
-  async update(req, res) {
-    try {
-      const item = await Asignacion.findByPk(req.params.id);
-      if (!item) return res.status(404).json({ error: 'No encontrado' });
-
-      const esAdmin = req.user.role === ROLES.ADMIN;
-      const esDueno = item.createdBy === req.user.id;
-      if (!esAdmin && !esDueno) return res.status(403).json({ error: 'Sin permiso' });
-
-      // si te envían nuevas FKs, valida que existan
-      const { cursoId, profesorId, aulaId } = req.body;
-      if (cursoId || profesorId || aulaId) {
-        const checks = [];
-        if (cursoId)    checks.push(Curso.findByPk(cursoId));
-        if (profesorId) checks.push(Profesor.findByPk(profesorId));
-        if (aulaId)     checks.push(Aula.findByPk(aulaId));
-        const found = await Promise.all(checks);
-        if (found.some(x => x === null)) {
-          return res.status(400).json({ error: 'Curso/Profesor/Aula inexistente(s)' });
-        }
-      }
-
-      await item.update(req.body);
-      res.json(item);
-    } catch (e) {
-      res.status(400).json({ error: 'Error actualizando' });
-    }
-  },
-
-  async patch(req, res) {
+  async update(req, res, next) {
     try {
       const item = await Asignacion.findByPk(req.params.id);
       if (!item) return res.status(404).json({ error: 'No encontrado' });
@@ -87,12 +53,36 @@ module.exports = {
 
       await item.update(req.body);
       res.json(item);
-    } catch (e) {
-      res.status(400).json({ error: 'Error actualizando (parcial)' });
-    }
+    } catch (e) { next(e); }
   },
 
-  async remove(req, res) {
+  async patch(req, res, next) {
+    try {
+      const item = await Asignacion.findByPk(req.params.id);
+      if (!item) return res.status(404).json({ error: 'No encontrado' });
+
+      const esAdmin = req.user.role === ROLES.ADMIN;
+      const esDueno = item.createdBy === req.user.id;
+      if (!esAdmin && !esDueno) return res.status(403).json({ error: 'Sin permiso' });
+
+      const { cursoId, profesorId, aulaId } = req.body;
+      if (cursoId || profesorId || aulaId) {
+        const checks = [];
+        if (cursoId)    checks.push(Curso.findByPk(cursoId));
+        if (profesorId) checks.push(Profesor.findByPk(profesorId));
+        if (aulaId)     checks.push(Aula.findByPk(aulaId));
+        const found = await Promise.all(checks);
+        if (found.some(x => x === null)) {
+          return res.status(400).json({ error: 'Curso/Profesor/Aula inexistente(s)' });
+        }
+      }
+
+      await item.update(req.body);
+      res.json(item);
+    } catch (e) { next(e); }
+  },
+
+  async remove(req, res, next) {
     try {
       if (req.user.role !== ROLES.ADMIN) return res.status(403).json({ error: 'Solo admin puede borrar' });
 
@@ -101,8 +91,6 @@ module.exports = {
 
       await item.destroy();
       res.json({ ok: true });
-    } catch (e) {
-      res.status(500).json({ error: 'Error eliminando' });
-    }
+    } catch (e) { next(e); }
   }
 };

@@ -10,6 +10,7 @@ const profesoresRoutes = require('./routes/profesores.routes');
 const aulasRoutes = require('./routes/aulas.routes');
 const matriculasRoutes = require('./routes/matriculas.routes');
 const asignacionesRoutes = require('./routes/asignaciones.routes');
+const { errorHandler } = require('./middleware/error-handler');
 
 const app = express();
 app.use(cors());
@@ -25,6 +26,7 @@ app.use('/aulas', aulasRoutes);
 app.use('/matriculas', matriculasRoutes);
 app.use('/asignaciones', asignacionesRoutes);
 app.use((req, res) => res.status(404).json({ error: 'Ruta no encontrada' }));
+app.use(errorHandler);
 
 (async () => {
   try {
@@ -36,4 +38,3 @@ app.use((req, res) => res.status(404).json({ error: 'Ruta no encontrada' }));
     process.exit(1);
   }
 })();
-

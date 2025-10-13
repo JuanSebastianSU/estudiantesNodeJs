@@ -2,32 +2,32 @@ const { Matricula, Estudiante, Curso } = require('../models');
 const { ROLES } = require('../config/roles');
 
 module.exports = {
-  async list(req, res) {
+  async list(req, res, next) {
     try {
       const items = await Matricula.findAll({ include: [Estudiante, Curso] });
       res.json(items);
-    } catch (e) {
-      res.status(500).json({ error: 'Error listando' });
-    }
+    } catch (e) { next(e); }
   },
 
-  async create(req, res) {
+  async create(req, res, next) {
     try {
       const { estudianteId, cursoId, fecha } = req.body;
-      if (!estudianteId || !cursoId) return res.status(400).json({ error: 'estudianteId y cursoId requeridos' });
+      if (!estudianteId || !cursoId) {
+        return res.status(400).json({ error: 'estudianteId y cursoId requeridos' });
+      }
 
-      const est = await Estudiante.findByPk(estudianteId);
-      const cur = await Curso.findByPk(cursoId);
+      const [est, cur] = await Promise.all([
+        Estudiante.findByPk(estudianteId),
+        Curso.findByPk(cursoId)
+      ]);
       if (!est || !cur) return res.status(400).json({ error: 'Estudiante o Curso inexistente' });
 
       const nuevo = await Matricula.create({ estudianteId, cursoId, fecha, createdBy: req.user.id });
       res.status(201).json(nuevo);
-    } catch (e) {
-      res.status(400).json({ error: 'Error creando' });
-    }
+    } catch (e) { next(e); }
   },
 
-  async update(req, res) {
+  async update(req, res, next) {
     try {
       const item = await Matricula.findByPk(req.params.id);
       if (!item) return res.status(404).json({ error: 'No encontrado' });
@@ -38,12 +38,10 @@ module.exports = {
 
       await item.update(req.body);
       res.json(item);
-    } catch (e) {
-      res.status(400).json({ error: 'Error actualizando' });
-    }
+    } catch (e) { next(e); }
   },
 
-  async patch(req, res) {
+  async patch(req, res, next) {
     try {
       const item = await Matricula.findByPk(req.params.id);
       if (!item) return res.status(404).json({ error: 'No encontrado' });
@@ -54,12 +52,10 @@ module.exports = {
 
       await item.update(req.body);
       res.json(item);
-    } catch (e) {
-      res.status(400).json({ error: 'Error actualizando (parcial)' });
-    }
+    } catch (e) { next(e); }
   },
 
-  async remove(req, res) {
+  async remove(req, res, next) {
     try {
       if (req.user.role !== ROLES.ADMIN) return res.status(403).json({ error: 'Solo admin puede borrar' });
 
@@ -68,8 +64,6 @@ module.exports = {
 
       await item.destroy();
       res.json({ ok: true });
-    } catch (e) {
-      res.status(500).json({ error: 'Error eliminando' });
-    }
+    } catch (e) { next(e); }
   }
 };
